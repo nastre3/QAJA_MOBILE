@@ -1,6 +1,6 @@
 package lib;
 
-import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.AppiumDriver; // поверх библиотеки selenium
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import lib.ui.PlatformSelector;
@@ -15,14 +15,14 @@ public class CoreTestCase {
     protected AppiumDriver<WebElement> driver;
     private static final String APPIUM_URL = "http://0.0.0.0:4723/wd/hub";
 
-    @Before
+    @Before // запускается перед каждым тестом
     public void setUp() throws Exception {
-        URL URL = new URL(APPIUM_URL);
+        URL URL = new URL(APPIUM_URL); // объект URL
 
         if (PlatformSelector.PLATFORM == "ios") {
-            this.driver = new IOSDriver<WebElement>(URL, this.getIOSDesiredCapabilities());
+            this.driver = new IOSDriver<WebElement>(URL, this.getIOSDesiredCapabilities()); // объект URL передается в констуктор объекта IOSDriver
         } else if (PlatformSelector.PLATFORM == "android") {
-            this.driver = new AndroidDriver<WebElement>(URL, this.getAndroidDesiredCapabilities());
+            this.driver = new AndroidDriver<WebElement>(URL, this.getAndroidDesiredCapabilities()); // Capabilities - св-ва девайса/приложения для запускаемой сессии - воз-ся в конструктор
         } else {
             throw new Exception("Cannot run Appium session with the platform equals " + PlatformSelector.PLATFORM);
         }
@@ -34,15 +34,19 @@ public class CoreTestCase {
     }
 
     private DesiredCapabilities getAndroidDesiredCapabilities() {
+        String avdName = "ver10";
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("platformName","Android");
-        capabilities.setCapability("avd","ver10");
+        capabilities.setCapability("platformName","Android"); // запускаемая платформа
+
+        capabilities.setCapability("avd", avdName);
+        // 2 строки ниже - можно не указывать, если есть строка выше про "avd"
         capabilities.setCapability("deviceName","AndroidTestDevice");
         capabilities.setCapability("platformVersion","10.0");
+
         capabilities.setCapability("automationName","Appium");
-        capabilities.setCapability("appPackage","org.wikipedia");
-        capabilities.setCapability("appActivity",".main.MainActivity");
-        capabilities.setCapability("app","/Users/vitalijkotov/SFMobile/apps/org.wikipedia.apk");
+        capabilities.setCapability("appPackage","org.wikipedia"); // название проверяемой программы
+        capabilities.setCapability("appActivity",".main.MainActivity"); // экран для запуска приложения, уточняется у разработчиков
+        capabilities.setCapability("app","/Users/vitalijkotov/SFMobile/apps/org.wikipedia.apk"); // путь до apk файла приложения (обязательно, если приложение не установлено)
         return capabilities;
     }
 
